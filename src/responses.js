@@ -2,6 +2,22 @@ const fs = require('fs');
 const index = fs.readFileSync(`${__dirname}/../client/client.html`);
 const css = fs.readFileSync(`${__dirname}/../client/style.css`);
 
+const sendResponse = (request, response, acceptedTypes, responseObj, statusCode) =>
+{
+    if (acceptedTypes[0] === 'text/xml') 
+    {
+        let responseXML = '<response>';
+        responseXML = `${responseXML} <message>${responseObj.message}</message>`;
+        if(responseObj.id) responseXML = `${responseXML} <id>${responseObj.id}</id>`;
+        responseXML = `${responseXML} </response>`;
+    
+        return getResponse(request, response, statusCode, 'text/xml', responseXML);
+    }
+
+    const message = JSON.stringify(responseObj);
+    getResponse(request, response, statusCode, 'application/json', message);
+};
+
 const getResponse = (request, response, statusCode, contentType, content) => 
 {
   response.writeHead(statusCode, { 'Content-Type': contentType });
@@ -109,22 +125,6 @@ const notFound = (request, response, acceptedTypes) =>
     };
 
     sendResponse(request, response, acceptedTypes, responseObj, 404);
-};
-
-const sendResponse = (request, response, acceptedTypes, responseObj, statusCode) =>
-{
-    if (acceptedTypes[0] === 'text/xml') 
-    {
-        let responseXML = '<response>';
-        responseXML = `${responseXML} <message>${responseObj.message}</message>`;
-        if(responseObj.id) responseXML = `${responseXML} <id>${responseObj.id}</id>`;
-        responseXML = `${responseXML} </response>`;
-    
-        return getResponse(request, response, statusCode, 'text/xml', responseXML);
-    }
-
-    const message = JSON.stringify(responseObj);
-    getResponse(request, response, statusCode, 'application/json', message);
 };
 
 module.exports = 
