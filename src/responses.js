@@ -2,6 +2,13 @@ const fs = require('fs');
 const index = fs.readFileSync(`${__dirname}/../client/client.html`);
 const css = fs.readFileSync(`${__dirname}/../client/style.css`);
 
+const getResponse = (request, response, statusCode, contentType, content) => 
+{
+  response.writeHead(statusCode, { 'Content-Type': contentType });
+  response.write(content);
+  response.end();
+};
+
 const sendResponse = (request, response, acceptedTypes, responseObj, statusCode) =>
 {
     if (acceptedTypes[0] === 'text/xml') 
@@ -16,13 +23,6 @@ const sendResponse = (request, response, acceptedTypes, responseObj, statusCode)
 
     const message = JSON.stringify(responseObj);
     getResponse(request, response, statusCode, 'application/json', message);
-};
-
-const getResponse = (request, response, statusCode, contentType, content) => 
-{
-  response.writeHead(statusCode, { 'Content-Type': contentType });
-  response.write(content);
-  response.end();
 };
 
 const getIndex = (request, response) =>
