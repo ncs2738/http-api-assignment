@@ -18,11 +18,13 @@ const sendResponse = (request, response, acceptedTypes, responseObj, statusCode)
         if(responseObj.id) responseXML = `${responseXML} <id>${responseObj.id}</id>`;
         responseXML = `${responseXML} </response>`;
     
-        return getResponse(request, response, statusCode, 'text/xml', responseXML);
+        getResponse(request, response, statusCode, 'text/xml', responseXML);
     }
-
-    const message = JSON.stringify(responseObj);
-    getResponse(request, response, statusCode, 'application/json', message);
+    else
+    {
+        const message = JSON.stringify(responseObj);
+        getResponse(request, response, statusCode, 'application/json', message);
+    }
 };
 
 const getIndex = (request, response) =>
@@ -58,10 +60,12 @@ const badRequest = (request, response, acceptedTypes, params) =>
         responseObj.message = 'Missing valid query parameter set to true';
         responseObj.id = 'badRequest';
         
-        return sendResponse(request, response, acceptedTypes, responseObj, 400);
+        sendResponse(request, response, acceptedTypes, responseObj, 400);
     }
-
-    sendResponse(request, response, acceptedTypes, responseObj, 200);
+    else
+    {       
+        sendResponse(request, response, acceptedTypes, responseObj, 200);
+    }
 };
 
 const unauthorized = (request, response, acceptedTypes, params) =>
@@ -77,10 +81,12 @@ const unauthorized = (request, response, acceptedTypes, params) =>
         responseObj.message = 'Missing loggedIn query parameter set to yes';
         responseObj.id = 'unauthorized';
 
-        return sendResponse(request, response, acceptedTypes, responseObj, 401);
+        sendResponse(request, response, acceptedTypes, responseObj, 401);
     }
-
-    sendResponse(request, response, acceptedTypes, responseObj, 200);
+    else
+    {
+        sendResponse(request, response, acceptedTypes, responseObj, 200);
+    }
 };
 
 const forbidden = (request, response, acceptedTypes) => 
